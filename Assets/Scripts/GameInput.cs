@@ -7,12 +7,19 @@ public class GameInput : MonoBehaviour
 {
     private PlayerInputActions playerInputActions; // Obtain access to PlayerInputAction in Unity
     public event EventHandler OnInteractAction; // This is a publisher event, which will need subrcibers or listeners for it to work properly
+    public event EventHandler OnInteractAlternateAction;
     private void Awake()
     {
         playerInputActions = new PlayerInputActions();
         playerInputActions.Player.Enable(); //Activate action map we created in Unity
 
-        playerInputActions.Player.Interact.performed += Interact_performed; 
+        playerInputActions.Player.Interact.performed += Interact_performed;
+        playerInputActions.Player.InteractAlternate.performed += InteractAlternate_performed;
+    }
+
+    private void InteractAlternate_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnInteractAlternateAction?.Invoke(this, EventArgs.Empty);
     }
 
     private void Interact_performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) // When a player starts an interact action, it will start this function

@@ -35,4 +35,20 @@ public class KitchenObject : MonoBehaviour
     {
         return kitchenObjectParent;
     }
+
+    public void DestroySelf() // Despawn the game object and lose all refernce to it
+    {
+        kitchenObjectParent.ClearKitchenObject();
+        Destroy(gameObject);
+    }
+
+    public static KitchenObject SpawnKitchenObject(KitchenObjectSO kitchenObjectSO, IKitchenObjectParent kitchenObjectParent)
+    {
+        Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.prefab); // Create or spawn an object of the tomato prefab using the position of an empty game object (which should be set somewhere desirable for the tomato to spawn)
+        KitchenObject kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>(); // We set the clear counter and the visual for the kitchen object on it (Further reference in KitchenObject.cs)
+
+        kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
+
+        return kitchenObject;
+    }
 }
