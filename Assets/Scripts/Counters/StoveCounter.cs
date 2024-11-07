@@ -132,9 +132,28 @@ public class StoveCounter : BaseCounter, IHasProgress
         }
         else // A kitchen object is already on the counter
         {
-            if (player.HasKitchenObject()) // Player is carrying something so don't do anything. Don't attempt to pick up kitchen object when player's hands are full. 
+            if (player.HasKitchenObject()) // Player is carrying something.
             {
+                if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject)) // Check to see if the player is carrying a plate (kitchen object).
+                {
 
+                    if (plateKitchenObject.TryAddIngredient(GetKitchenObject().GetKitchenObjectSO())) // Add the current ingredient on the counter to the plate
+                    {
+                        GetKitchenObject().DestroySelf(); // After adding the ingredient to the plate, remove the ingredient from the counter itself
+
+                        state = State.Idle; // Reset state if we do pick up the ingredient from the stove using a plate.
+
+                        OnStateChanged?.Invoke(this, new OnStateChangedEventArgs
+                        {
+                            state = state
+                        });
+
+                        OnProgressChanged?.Invoke(this, new IHasProgress.OnProgressChangedEventArgs
+                        {
+                            progressNormalized = 0f
+                        });
+                    }
+                }
             }
             else // Player is not carrying anything
             {
