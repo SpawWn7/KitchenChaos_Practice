@@ -23,7 +23,7 @@ public class PlateIconUI : MonoBehaviour
 
     private void UpdateVisual() // We will update the icon visuals as we add more ingredients to the plate
     {
-        foreach (Transform child in transform) // This is to prevent spawning all the images on the cions provided by the GetKitchenObjectSOList() 
+        foreach (Transform child in transform) // This is to prevent spawning all the images on the icons provided by the GetKitchenObjectSOList() 
         {
             if (child == iconTemplate) continue;
             Destroy(child.gameObject);
