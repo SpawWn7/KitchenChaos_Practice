@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Profiling;
@@ -5,6 +6,9 @@ using UnityEngine;
 
 public class DeliveryManager : MonoBehaviour
 {
+
+    public event EventHandler OnRecipeSpawn;
+    public event EventHandler OnRecipeCompleted;
     public static DeliveryManager Instance { get; private set; }
 
     [SerializeField] private RecipeListSO recipeListSO;
@@ -30,9 +34,10 @@ public class DeliveryManager : MonoBehaviour
 
             if (waitingRecipeSOList.Count < waitingRecipesMax) // We only want to add a new recipe to the waiting list as long as there are less than  4 recipes/orders waiting
             {
-                RecipeSO recipeSO = recipeListSO.recipeSOList[Random.Range(0, recipeListSO.recipeSOList.Count)];
-                Debug.Log(recipeSO.recipeName);
+                RecipeSO recipeSO = recipeListSO.recipeSOList[UnityEngine.Random.Range(0, recipeListSO.recipeSOList.Count)];
                 waitingRecipeSOList.Add(recipeSO);
+
+                OnRecipeSpawn?.Invoke(this, EventArgs.Empty);
             }
         }
     }
@@ -66,14 +71,19 @@ public class DeliveryManager : MonoBehaviour
                 }
                 if (plateContentsMatchesRecipe) // Player delivered the correct recipe
                 {
-                    Debug.Log("Player delivered the correct recipe");
+                    
                     waitingRecipeSOList.RemoveAt(i);
+                    OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
+
                     return;
                 }
             }
         }
         //Player failed to deliver the correct recipe
-        Debug.Log("Player did not deliver the correct recipe");
+    }
 
+    public List<RecipeSO> GetWaitingRecipeSOList() 
+    {
+        return waitingRecipeSOList;
     }
 }
