@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 public class Player : MonoBehaviour, IKitchenObjectParent
 {
     public static Player Instance { get; private set; } // Valid C# property
+
+    public event EventHandler OnPickedSomthing;
     public event EventHandler<OnSelectedCounterChangeEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangeEventArgs : EventArgs
     {
@@ -173,6 +175,11 @@ public class Player : MonoBehaviour, IKitchenObjectParent
     public void SetKitchenObject(KitchenObject kitchenObject) // We want to be able to transfor the proper kitchenObject to the new parent clear counter
     {
         this.kitchenObject = kitchenObject;
+
+        if  (kitchenObject != null) 
+        {
+            OnPickedSomthing?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     public KitchenObject GetKitchenObject()
